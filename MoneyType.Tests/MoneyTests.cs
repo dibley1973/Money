@@ -1,3 +1,12 @@
+﻿//-----------------------------------------------------------------------
+// <copyright file="MoneyTests.cs" company="Dewe">
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of the GNU General Public License
+// as published by the Free Software Foundation; either version 2
+// of the License, or (at your option) any later version.
+// </copyright>
+//-----------------------------------------------------------------------
+
 using MoneyType;
 using NUnit.Framework;
 
@@ -10,7 +19,7 @@ namespace Tests
         public void Can_be_compared()
         {
             var dkk1 = new Money(13, "DKK");
-            var dkk2 = new Money(13, Currency.DKK);
+            var dkk2 = new Money(13, Currency.KnownCurrencies.DKK);
 
             Assert.IsTrue(dkk1 == dkk2);
         }
@@ -18,7 +27,7 @@ namespace Tests
         [Test]
         public void Can_be_created()
         {
-            var sek = new Money(4711, Currency.SEK);
+            var sek = new Money(4711, Currency.KnownCurrencies.SEK);
             Assert.AreEqual(4711, sek.Amount);
             Assert.AreEqual("SEK", sek.Currency.IsoCode);
         }

@@ -1,4 +1,11 @@
-﻿using System;
+﻿// <copyright file="Money.cs" company="Dewe">
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of the GNU General Public License
+// as published by the Free Software Foundation; either version 2
+// of the License, or (at your option) any later version.
+// </copyright>
+
+using System;
 
 namespace MoneyType
 {
@@ -33,15 +40,15 @@ namespace MoneyType
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != typeof (Money)) return false;
-            return Equals((Money) obj);
+            if (obj.GetType() != typeof(Money)) return false;
+            return Equals((Money)obj);
         }
 
         public override int GetHashCode()
         {
             unchecked
             {
-                return (Amount.GetHashCode()*397) ^ Currency.GetHashCode();
+                return (Amount.GetHashCode() * 397) ^ Currency.GetHashCode();
             }
         }
 

@@ -17,7 +17,7 @@ namespace MoneyType
     /// Encapsulates currency data and behaviour.
     /// </summary>
     /// <seealso cref="Currency" />
-    public class Currency : IEquatable<Currency>
+    public sealed class Currency : IEquatable<Currency>, IEqualityComparer<Currency>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Currency"/> class.
@@ -83,6 +83,88 @@ namespace MoneyType
         }
 
         /// <summary>
+        /// Determines whether the specified objects are equal.
+        /// </summary>
+        /// <param name="x">The first object of type T to compare.</param>
+        /// <param name="y">The second object of type T to compare.</param>
+        /// <returns>
+        /// Returns <c>true</c> if the specified objects are equal; otherwise, <c>false</c>.
+        /// </returns>
+        public static bool Equals(Currency x, Currency y)
+        {
+            return x.Equals(y);
+        }
+
+        /// <summary>
+        /// Determines whether the specified <see cref="Currency"/>, is equal to this instance.
+        /// </summary>
+        /// <param name="other">The other <see cref="Currency"/>.</param>
+        /// <returns>
+        ///   <c>true</c> if the specified <see cref="object" /> is equal to this instance; otherwise, <c>false</c>.
+        /// </returns>
+        public bool Equals(Currency other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+
+            return Equals(other.IsoCode, IsoCode);
+        }
+
+        /// <summary>
+        /// Determines whether the specified <see cref="object" />, is equal to this instance.
+        /// </summary>
+        /// <param name="obj">The <see cref="object" /> to compare with this instance.</param>
+        /// <returns>
+        ///   <c>true</c> if the specified <see cref="object" /> is equal to this instance; otherwise, <c>false</c>.
+        /// </returns>
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != typeof(Currency)) return false;
+
+            return Equals((Currency)obj);
+        }
+
+        /// <summary>
+        /// Determines whether the specified <see cref="Currency"/> objects are equal.
+        /// </summary>
+        /// <param name="x">The first <see cref="Currency"/> to compare.</param>
+        /// <param name="y">The second <see cref="Currency"/> to compare.</param>
+        /// <returns>
+        /// Returns <c>true</c> if the specified objects are equal; otherwise, <c>false</c>.
+        /// </returns>
+        bool IEqualityComparer<Currency>.Equals(Currency x, Currency y)
+        {
+            return Equals(x, y);
+        }
+
+        /// <summary>
+        /// Returns a hash code for the specified <see cref="Currency"/> instance.
+        /// </summary>
+        /// <param name="obj">
+        /// The <see cref="Currency"/> instance to get the hash-code for.
+        /// </param>
+        /// <returns>
+        /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
+        /// </returns>
+        public int GetHashCode(Currency obj)
+        {
+            return obj.GetHashCode();
+        }
+
+        /// <summary>
+        /// Returns a hash code for this instance.
+        /// </summary>
+        /// <returns>
+        /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
+        /// </returns>
+        public override int GetHashCode()
+        {
+            return IsoCode.GetHashCode();
+        }
+
+        /// <summary>
         /// Determines whether the specified three letter ISO code is not on the white list.
         /// </summary>
         /// <param name="isoCode">The iso code.</param>
@@ -94,43 +176,19 @@ namespace MoneyType
             return !KnownCurrencies.Whitelist.Contains<string>(isoCode);
         }
 
-        #region IEquatable<Currency> Members
-
-        public bool Equals(Currency other)
-        {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
-            return Equals(other.IsoCode, IsoCode);
-        }
-
-        #endregion
-
-        public override bool Equals(object obj)
-        {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != typeof(Currency)) return false;
-            return Equals((Currency)obj);
-        }
-
-        public override int GetHashCode()
-        {
-            return IsoCode.GetHashCode();
-        }
-
         /// <summary>
         /// Encapsulates known currencies
         /// </summary>
         public static class KnownCurrencies
         {
-            internal static readonly HashSet<string> Whitelist = new HashSet<string> { "GBP", "DKK", "EUR", "NOK", "SEK", "USD" };
-
             public static readonly Currency GBP = new Currency("GBP");
             public static readonly Currency DKK = new Currency("DKK");
             public static readonly Currency EUR = new Currency("EUR");
             public static readonly Currency NOK = new Currency("NOK");
             public static readonly Currency SEK = new Currency("SEK");
             public static readonly Currency USD = new Currency("USD");
+
+            internal static readonly HashSet<string> Whitelist = new HashSet<string> { "GBP", "DKK", "EUR", "NOK", "SEK", "USD" };
         }
     }
 }

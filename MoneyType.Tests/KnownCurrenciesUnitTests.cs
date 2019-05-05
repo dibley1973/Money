@@ -7,19 +7,20 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-using MoneyType;
 using NUnit.Framework;
 
-namespace Tests
+namespace MoneyType.Tests
 {
     /// <summary>
     /// Unit tests for the <see cref="Currency.KnownCurrencies"/> class.
     /// </summary>
     public class KnownCurrenciesUnitTests
     {
-
+        /// <summary>
+        /// Given the known currencies, then has all instances.
+        /// </summary>
         [Test]
-        public void GivenKnownCurrencies_HasAllInstances()
+        public void GivenKnownCurrencies_ThenHasAllInstances()
         {
             Assert.IsInstanceOf<Currency>(Currency.KnownCurrencies.GBP);
             Assert.IsInstanceOf<Currency>(Currency.KnownCurrencies.DKK);

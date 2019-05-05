@@ -22,10 +22,31 @@ namespace MoneyType
             Currency = currency;
         }
 
-        public decimal Amount { get; private set; }
-        public Currency Currency { get; private set; }
+        /// <summary>
+        /// Gets the amount.
+        /// </summary>
+        /// <value>
+        /// The amount.
+        /// </value>
+        public decimal Amount { get; }
 
-        #region IEquatable<Money> Members
+        /// <summary>
+        /// Gets the currency.
+        /// </summary>
+        /// <value>
+        /// The currency.
+        /// </value>
+        public Currency Currency { get; }
+
+        public static bool operator ==(Money left, Money right)
+        {
+            return Equals(left, right);
+        }
+
+        public static bool operator !=(Money left, Money right)
+        {
+            return !Equals(left, right);
+        }
 
         public bool Equals(Money other)
         {
@@ -33,8 +54,6 @@ namespace MoneyType
             if (ReferenceEquals(this, other)) return true;
             return other.Amount == Amount && Equals(other.Currency, Currency);
         }
-
-        #endregion
 
         public override bool Equals(object obj)
         {
@@ -50,16 +69,6 @@ namespace MoneyType
             {
                 return (Amount.GetHashCode() * 397) ^ Currency.GetHashCode();
             }
-        }
-
-        public static bool operator ==(Money left, Money right)
-        {
-            return Equals(left, right);
-        }
-
-        public static bool operator !=(Money left, Money right)
-        {
-            return !Equals(left, right);
         }
     }
 }

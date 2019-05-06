@@ -1,4 +1,4 @@
-﻿// <copyright file="Money.cs" company="Dewe">
+﻿// <copyright file="Money.cs" company="MoneyType">
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
 // as published by the Free Software Foundation; either version 2
@@ -6,20 +6,29 @@
 // </copyright>
 
 using System;
+using MoneyType.BaseClasses;
 
 namespace MoneyType
 {
-    public class Money : IEquatable<Money>
+    /// <summary>
+    /// Encapsulates money data and behaviour.
+    /// </summary>
+    /// <seealso cref="Currency" />
+    /// <seealso cref="ValueObject{T}" />
+    public class Money : ValueObject<Money>
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Money"/> class.
+        /// </summary>
+        /// <param name="amount">The amount.</param>
+        /// <param name="currency">The currency.</param>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if currency is null
+        /// </exception>
         public Money(decimal amount, Currency currency)
         {
-            if (currency == null)
-            {
-                throw new ArgumentNullException("currency");
-            }
-
             Amount = amount;
-            Currency = currency;
+            Currency = currency ?? throw new ArgumentNullException(nameof(currency));
         }
 
         /// <summary>
@@ -38,36 +47,32 @@ namespace MoneyType
         /// </value>
         public Currency Currency { get; }
 
-        public static bool operator ==(Money left, Money right)
+        /// <summary>
+        /// Instance specific implementation of `Equals`.
+        /// </summary>
+        /// <param name="other">The other.</param>
+        /// <returns>
+        /// Returns <c>true</c> if it equals; otherwise <c>false</c>.
+        /// </returns>
+        protected override bool EqualsCore(Money other)
         {
-            return Equals(left, right);
+            return Amount == other.Amount && Currency == other.Currency;
         }
 
-        public static bool operator !=(Money left, Money right)
-        {
-            return !Equals(left, right);
-        }
-
-        public bool Equals(Money other)
-        {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
-            return other.Amount == Amount && Equals(other.Currency, Currency);
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != typeof(Money)) return false;
-            return Equals((Money)obj);
-        }
-
-        public override int GetHashCode()
+        /// <summary>
+        /// Instance specific implementation of `GetHashCode`.
+        /// </summary>
+        /// <returns>
+        /// Returns a <see cref="T:System.Int32" /> representation of the hash code
+        /// </returns>
+        protected override int GetHashCodeCore()
         {
             unchecked
             {
-                return (Amount.GetHashCode() * 397) ^ Currency.GetHashCode();
+                int hashCode = Amount.GetHashCode();
+                hashCode = (hashCode * 397) ^ Currency.GetHashCode();
+
+                return hashCode;
             }
         }
     }

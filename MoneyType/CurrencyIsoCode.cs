@@ -50,22 +50,9 @@ namespace MoneyType
         /// </exception>
         internal CurrencyIsoCode(string value)
         {
-            if (string.IsNullOrWhiteSpace(value))
-            {
-                throw new ArgumentNullException(nameof(value));
-            }
-
-            if (value.Length != ExpectedIso4217CodeLength)
-            {
-                throw new ArgumentException(
-                    $"Specified ISO code length was incorrect. Expected length of {ExpectedIso4217CodeLength}",
-                    value);
-            }
-
-            if (IsNotOnWhiteList(value))
-            {
-                throw new ArgumentException($"The value of {nameof(value)} is an unrecognised ISO currency code");
-            }
+            EnsureNotNullOrWhiteSpace(value);
+            EnsureCorrectLength(value);
+            EnsureOnTheWhiteList(value);
 
             Value = value;
         }
@@ -121,6 +108,59 @@ namespace MoneyType
         }
 
         /// <summary>
+        /// Ensures value is on the white list.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <exception cref="ArgumentException">The value of {nameof(value)}</exception>
+        private static void EnsureOnTheWhiteList(string value)
+        {
+            if (IsNotOnWhiteList(value))
+            {
+                throw new ArgumentException($"The value of {nameof(value)} is an unrecognised ISO currency code");
+            }
+        }
+
+        /// <summary>
+        /// Ensures value is the length of the correct.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <exception cref="ArgumentException">Specified ISO code length was incorrect. Expected length of {ExpectedIso4217CodeLength}</exception>
+        private static void EnsureCorrectLength(string value)
+        {
+            if (value.Length != ExpectedIso4217CodeLength)
+            {
+                throw new ArgumentException(
+                    $"Specified ISO code length was incorrect. Expected length of {ExpectedIso4217CodeLength}",
+                    value);
+            }
+        }
+
+        /// <summary>
+        /// Ensures value is not null or white space.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <exception cref="ArgumentNullException">value</exception>
+        private static void EnsureNotNullOrWhiteSpace(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
+        }
+
+        /// <summary>
+        /// Determines whether the specified value is not on white list.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <returns>
+        ///   <c>true</c> if the specified value is not on white list; otherwise, <c>false</c>.
+        /// </returns>
+        private static bool IsNotOnWhiteList(string value)
+        {
+            return !Whitelist.Contains(value);
+        }
+
+        /// <summary>
         /// Determines if the three letter ISO codes for the current instance and the iso
         /// code for the specified <see cref="CurrencyIsoCode"/> match.
         /// </summary>
@@ -131,18 +171,6 @@ namespace MoneyType
         private bool IsoCodesMatch(CurrencyIsoCode other)
         {
             return Equals(other.Value, Value);
-        }
-
-        /// <summary>
-        /// Determines whether the specified value is not on white list.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <returns>
-        ///   <c>true</c> if the specified value is not on white list; otherwise, <c>false</c>.
-        /// </returns>
-        private bool IsNotOnWhiteList(string value)
-        {
-            return !Whitelist.Contains(value);
         }
 
         /// <summary>

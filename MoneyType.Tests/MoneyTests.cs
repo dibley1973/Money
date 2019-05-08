@@ -54,21 +54,21 @@ namespace MoneyType.Tests
             actual.Should().NotThrow("because no exception should be thrown for valid currency values");
         }
 
-        /// <summary>
-        /// Given the constructor when supplied valid iso code then does not throw exception.
-        /// </summary>
-        [Test]
-        public void GivenConstructor_WhenSuppliedValidIsoCode_ThenDoesNotThrowException()
-        {
-            // ARRANGE
-            var validIsoCode = "EUR";
+        ///// <summary>
+        ///// Given the constructor when supplied valid iso code then does not throw exception.
+        ///// </summary>
+        //[Test]
+        //public void GivenConstructor_WhenSuppliedValidIsoCode_ThenDoesNotThrowException()
+        //{
+        //    // ARRANGE
+        //    var validIsoCode = "EUR";
 
-            // ACT
-            Action actual = () => new Money(13, validIsoCode);
+        //    // ACT
+        //    Action actual = () => new Money(13, validIsoCode);
 
-            // ASSERT
-            actual.Should().NotThrow("because no exception should be thrown for valid ISO code values");
-        }
+        //    // ASSERT
+        //    actual.Should().NotThrow("because no exception should be thrown for valid ISO code values");
+        //}
 
         /// <summary>
         /// Given the amount when accessed after construction then contains constructed value.
@@ -103,13 +103,50 @@ namespace MoneyType.Tests
         }
 
         /// <summary>
+        /// Given the get hash code, when same values then returns true.
+        /// </summary>
+        [Test]
+        public void GivenGetHashCode_WhenSameValues_ThenReturnsTrue()
+        {
+            // ARRANGE
+            var money1 = new Money(13, Currency.KnownCurrencies.GBP);
+            var money2 = new Money(13, Currency.KnownCurrencies.GBP);
+
+            // ACT
+            var actual = money1.GetHashCode().Equals(money2.GetHashCode());
+
+            // ASSERT
+            actual.Should().BeTrue("because the money structures have identical values");
+        }
+
+        /// <summary>
+        /// Given the get hash code, when different values then returns false.
+        /// </summary>
+        [Test]
+        public void GivenGetHashCode_WhenDifferentValues_ThenReturnsFalse()
+        {
+            // ARRANGE
+            var money1 = new Money(13, Currency.KnownCurrencies.GBP);
+            var money2 = new Money(13, Currency.KnownCurrencies.DKK);
+            var money3 = new Money(14, Currency.KnownCurrencies.DKK);
+
+            // ACT
+            var actual1 = money1.GetHashCode().Equals(money2.GetHashCode());
+            var actual2 = money2.GetHashCode().Equals(money3.GetHashCode());
+
+            // ASSERT
+            actual1.Should().BeFalse("because the money structures have differing values");
+            actual2.Should().BeFalse("because the money structures have differing values");
+        }
+
+        /// <summary>
         /// Given the is equal to when supplied with equal values then returns true.
         /// </summary>
         [Test]
         public void GivenIsEqualTo_WhenSuppliedWithEqualValues_ThenReturnsTrue()
         {
             // ARRANGE
-            var money1 = new Money(13, "DKK");
+            var money1 = new Money(13, Currency.KnownCurrencies.DKK);
             var money2 = new Money(13, Currency.KnownCurrencies.DKK);
 
             // ACT
@@ -126,7 +163,7 @@ namespace MoneyType.Tests
         public void GivenIsEqualTo_WhenSuppliedWithNonEqualValues_ThenReturnsFalse()
         {
             // ARRANGE
-            var money1 = new Money(13, "DKK");
+            var money1 = new Money(13, Currency.KnownCurrencies.DKK);
             var money2 = new Money(13, Currency.KnownCurrencies.SEK);
 
             // ACT

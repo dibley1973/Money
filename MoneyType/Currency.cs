@@ -19,6 +19,8 @@ namespace MoneyType
     /// <seealso cref="ValueObject{T}" />
     public class Currency : ValueObject<Currency>
     {
+        private const int ExpectedIso4217CodeLength = 3;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Currency"/> class.
         /// </summary>
@@ -34,6 +36,13 @@ namespace MoneyType
             if (string.IsNullOrWhiteSpace(isoCode))
             {
                 throw new ArgumentNullException(nameof(isoCode));
+            }
+
+            if (isoCode.Length != ExpectedIso4217CodeLength)
+            {
+                throw new ArgumentException(
+                    $"Specified ISO code length was incorrect. Expected length of {ExpectedIso4217CodeLength}",
+                    isoCode);
             }
 
             //if (IsNotOnWhiteList(isoCode))
@@ -58,7 +67,7 @@ namespace MoneyType
         /// <returns>
         /// The result of the conversion.
         /// </returns>
-        public static implicit operator Currency(string isoCode)
+        public static explicit operator Currency(string isoCode)
         {
             return new Currency(isoCode);
         }

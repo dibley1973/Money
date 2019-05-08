@@ -10,6 +10,7 @@
 using System;
 using MoneyType.BaseClasses;
 
+// ReSharper disable InconsistentNaming
 namespace MoneyType
 {
     /// <summary>
@@ -114,11 +115,34 @@ namespace MoneyType
         /// </summary>
         public static class KnownCurrencies
         {
+            /// <summary>
+            /// The Pound Sterling currency
+            /// </summary>
             public static readonly Currency GBP = new Currency(CurrencyIsoCode.KnownCurrencyIsoCodes.GBP);
+
+            /// <summary>
+            /// The Danish krone currency
+            /// </summary>
             public static readonly Currency DKK = new Currency(CurrencyIsoCode.KnownCurrencyIsoCodes.DKK);
+
+            /// <summary>
+            /// The euro currency
+            /// </summary>
             public static readonly Currency EUR = new Currency(CurrencyIsoCode.KnownCurrencyIsoCodes.EUR);
+
+            /// <summary>
+            /// The Norwegian krone currency
+            /// </summary>
             public static readonly Currency NOK = new Currency(CurrencyIsoCode.KnownCurrencyIsoCodes.NOK);
+
+            /// <summary>
+            /// The Swedish krona/kronor currency
+            /// </summary>
             public static readonly Currency SEK = new Currency(CurrencyIsoCode.KnownCurrencyIsoCodes.SEK);
+
+            /// <summary>
+            /// The US dollar currency
+            /// </summary>
             public static readonly Currency USD = new Currency(CurrencyIsoCode.KnownCurrencyIsoCodes.USD);
         }
     }

@@ -30,6 +30,9 @@ namespace MoneyType.Tests
             Assert.IsInstanceOf<Currency>(Currency.KnownCurrencies.USD);
         }
 
+        /// <summary>
+        /// Given the known currency iso codes then has all instances.
+        /// </summary>
         [Test]
         public void GivenKnownCurrencyIsoCodes_ThenHasAllInstances()
         {

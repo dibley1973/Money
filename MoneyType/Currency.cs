@@ -8,7 +8,6 @@
 //-----------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
 using MoneyType.BaseClasses;
 
 namespace MoneyType
@@ -19,8 +18,6 @@ namespace MoneyType
     /// <seealso cref="ValueObject{T}" />
     public class Currency : ValueObject<Currency>
     {
-        private const int ExpectedIso4217CodeLength = 3;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="Currency"/> class.
         /// </summary>
@@ -31,25 +28,10 @@ namespace MoneyType
         /// <exception cref="ArgumentException">
         /// Thrown if the specified ISO currency code appears to be invalid.
         /// </exception>
-        internal Currency(string isoCode)
+        internal Currency(CurrencyIsoCode isoCode)
         {
-            if (string.IsNullOrWhiteSpace(isoCode))
-            {
+            IsoCode = isoCode ??
                 throw new ArgumentNullException(nameof(isoCode));
-            }
-
-            if (isoCode.Length != ExpectedIso4217CodeLength)
-            {
-                throw new ArgumentException(
-                    $"Specified ISO code length was incorrect. Expected length of {ExpectedIso4217CodeLength}",
-                    isoCode);
-            }
-
-            //if (IsNotOnWhiteList(isoCode))
-            //{
-            //    throw new ArgumentException($"The value of {nameof(isoCode)} is an invalid ISO currency code");
-            //}
-            IsoCode = isoCode;
         }
 
         /// <summary>
@@ -58,18 +40,30 @@ namespace MoneyType
         /// <value>
         /// The three letter ISO 4217 code.
         /// </value>
-        public string IsoCode { get; }
+        public CurrencyIsoCode IsoCode { get; }
 
         /// <summary>
-        /// Performs an implicit conversion from <see cref="string"/> to <see cref="Currency"/>.
+        /// Performs an implicit conversion from <see cref="CurrencyIsoCode"/> to <see cref="Currency"/>.
         /// </summary>
         /// <param name="isoCode">The three letter ISO 4217 code.</param>
         /// <returns>
         /// The result of the conversion.
         /// </returns>
-        public static explicit operator Currency(string isoCode)
+        public static implicit operator Currency(CurrencyIsoCode isoCode)
         {
             return new Currency(isoCode);
+        }
+
+        /// <summary>
+        /// Performs an implicit conversion from <see cref="Currency"/> to <see cref="CurrencyIsoCode"/>.
+        /// </summary>
+        /// <param name="currency">The three letter ISO 4217 code.</param>
+        /// <returns>
+        /// The result of the conversion.
+        /// </returns>
+        public static implicit operator CurrencyIsoCode(Currency currency)
+        {
+            return currency.IsoCode;
         }
 
         /// <summary>
@@ -120,14 +114,12 @@ namespace MoneyType
         /// </summary>
         public static class KnownCurrencies
         {
-            public static readonly Currency GBP = new Currency("GBP");
-            public static readonly Currency DKK = new Currency("DKK");
-            public static readonly Currency EUR = new Currency("EUR");
-            public static readonly Currency NOK = new Currency("NOK");
-            public static readonly Currency SEK = new Currency("SEK");
-            public static readonly Currency USD = new Currency("USD");
-
-            internal static readonly HashSet<string> Whitelist = new HashSet<string> { "GBP", "DKK", "EUR", "NOK", "SEK", "USD" };
+            public static readonly Currency GBP = new Currency(CurrencyIsoCode.KnownCurrencyIsoCodes.GBP);
+            public static readonly Currency DKK = new Currency(CurrencyIsoCode.KnownCurrencyIsoCodes.DKK);
+            public static readonly Currency EUR = new Currency(CurrencyIsoCode.KnownCurrencyIsoCodes.EUR);
+            public static readonly Currency NOK = new Currency(CurrencyIsoCode.KnownCurrencyIsoCodes.NOK);
+            public static readonly Currency SEK = new Currency(CurrencyIsoCode.KnownCurrencyIsoCodes.SEK);
+            public static readonly Currency USD = new Currency(CurrencyIsoCode.KnownCurrencyIsoCodes.USD);
         }
     }
 }

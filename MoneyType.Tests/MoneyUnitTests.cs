@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="MoneyTests.cs" company="MoneyType">
+// <copyright file="MoneyUnitTests.cs" company="MoneyType">
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
 // as published by the Free Software Foundation; either version 2
@@ -18,7 +18,7 @@ namespace MoneyType.Tests
     ///  Tests for the <see cref="Money"/> object.
     /// </summary>
     [TestFixture]
-    public class MoneyTests
+    public class MoneyUnitTests
     {
         private const decimal ValidAmount = 4711;
 
@@ -53,22 +53,6 @@ namespace MoneyType.Tests
             // ASSERT
             actual.Should().NotThrow("because no exception should be thrown for valid currency values");
         }
-
-        ///// <summary>
-        ///// Given the constructor when supplied valid iso code then does not throw exception.
-        ///// </summary>
-        //[Test]
-        //public void GivenConstructor_WhenSuppliedValidIsoCode_ThenDoesNotThrowException()
-        //{
-        //    // ARRANGE
-        //    var validIsoCode = "EUR";
-
-        //    // ACT
-        //    Action actual = () => new Money(13, validIsoCode);
-
-        //    // ASSERT
-        //    actual.Should().NotThrow("because no exception should be thrown for valid ISO code values");
-        //}
 
         /// <summary>
         /// Given the amount when accessed after construction then contains constructed value.

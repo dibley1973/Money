@@ -29,5 +29,16 @@ namespace MoneyType.Tests
             Assert.IsInstanceOf<Currency>(Currency.KnownCurrencies.SEK);
             Assert.IsInstanceOf<Currency>(Currency.KnownCurrencies.USD);
         }
+
+        [Test]
+        public void GivenKnownCurrencyIsoCodes_ThenHasAllInstances()
+        {
+            Assert.IsInstanceOf<CurrencyIsoCode>(CurrencyIsoCode.KnownCurrencyIsoCodes.GBP);
+            Assert.IsInstanceOf<CurrencyIsoCode>(CurrencyIsoCode.KnownCurrencyIsoCodes.DKK);
+            Assert.IsInstanceOf<CurrencyIsoCode>(CurrencyIsoCode.KnownCurrencyIsoCodes.EUR);
+            Assert.IsInstanceOf<CurrencyIsoCode>(CurrencyIsoCode.KnownCurrencyIsoCodes.NOK);
+            Assert.IsInstanceOf<CurrencyIsoCode>(CurrencyIsoCode.KnownCurrencyIsoCodes.SEK);
+            Assert.IsInstanceOf<CurrencyIsoCode>(CurrencyIsoCode.KnownCurrencyIsoCodes.USD);
+        }
     }
 }

@@ -21,83 +21,19 @@ namespace MoneyType.Tests
     public class CurrencyTest
     {
         /// <summary>
-        /// Given the constructor when supplied null iso code then throws exception.
+        /// Given the constructor when supplied null <see cref="CurrencyIsoCode"/> then throws exception.
         /// </summary>
         [Test]
         public void GivenConstructor_WhenSuppliedNullIsoCode_ThenThrowsException()
         {
             // ARRANGE
-            const string nullIsoCode = null;
+            const CurrencyIsoCode nullCurrencyIsoCode = null;
 
             // ACT
-            Action actual = () => new Currency(nullIsoCode);
+            Action actual = () => new Currency(nullCurrencyIsoCode);
 
             // ASSERT
             actual.Should().Throw<ArgumentNullException>("because a null ISO code is not permitted for construction");
-        }
-
-        /// <summary>
-        /// Given the constructor when supplied empty iso code then throws exception.
-        /// </summary>
-        [Test]
-        public void GivenConstructor_WhenSuppliedEmptyIsoCode_ThenThrowsException()
-        {
-            // ARRANGE
-            const string emptyIsoCode = "";
-
-            // ACT
-            Action actual = () => new Currency(emptyIsoCode);
-
-            // ASSERT
-            actual.Should().Throw<ArgumentNullException>("because an empty ISO code is not permitted for construction");
-        }
-
-        /// <summary>
-        /// Given the constructor when supplied whitespace iso code then throws exception.
-        /// </summary>
-        [Test]
-        public void GivenConstructor_WhenSuppliedWhitespaceIsoCode_ThenThrowsException()
-        {
-            // ARRANGE
-            var emptyIsoCode = new string(' ', 3);
-
-            // ACT
-            Action actual = () => new Currency(emptyIsoCode);
-
-            // ASSERT
-            actual.Should().Throw<ArgumentNullException>("because a whitespace ISO code is not permitted for construction");
-        }
-
-        /// <summary>
-        /// Given the constructor when supplied iso code too short then throws exception.
-        /// </summary>
-        [Test]
-        public void GivenConstructor_WhenSuppliedIsoCodeTooShort_ThenThrowsException()
-        {
-            // ARRANGE
-            var tooShortIsoCode = "GB";
-
-            // ACT
-            Action actual = () => new Currency(tooShortIsoCode);
-
-            // ASSERT
-            actual.Should().Throw<ArgumentException>("because a too short an ISO code is not permitted for construction");
-        }
-
-        /// <summary>
-        /// Given the constructor when supplied iso code too long then throws exception.
-        /// </summary>
-        [Test]
-        public void GivenConstructor_WhenSuppliedIsoCodeTooLong_ThenThrowsException()
-        {
-            // ARRANGE
-            var tooLongIsoCode = "SPAM";
-
-            // ACT
-            Action actual = () => new Currency(tooLongIsoCode);
-
-            // ASSERT
-            actual.Should().Throw<ArgumentException>("because a too long an ISO code is not permitted for construction");
         }
 
         /// <summary>
@@ -108,8 +44,9 @@ namespace MoneyType.Tests
         {
             // ARRANGE
             var gbpIsoCode = "GBP";
-            var currency1 = new Currency(gbpIsoCode);
-            var currency2 = new Currency(gbpIsoCode);
+            var gbpCurrencyIsoCode = new CurrencyIsoCode(gbpIsoCode);
+            var currency1 = new Currency(gbpCurrencyIsoCode);
+            var currency2 = new Currency(gbpCurrencyIsoCode);
 
             // ACT
             var actual = currency1.GetHashCode().Equals(currency2.GetHashCode());
@@ -125,10 +62,12 @@ namespace MoneyType.Tests
         public void GivenGetHashCode_WhenDifferentValues_ThenReturnsFalse()
         {
             // ARRANGE
-            var gbpIsoCode = "GBP";
-            var usdIsoCode = "USD";
-            var currency1 = new Currency(gbpIsoCode);
-            var currency2 = new Currency(usdIsoCode);
+            var isoCode1 = "GBP";
+            var currencyIsoCode1 = new CurrencyIsoCode(isoCode1);
+            var currency1 = new Currency(currencyIsoCode1);
+            var isoCode2 = "USD";
+            var currencyIsoCode2 = new CurrencyIsoCode(isoCode2);
+            var currency2 = new Currency(currencyIsoCode2);
 
             // ACT
             var actual = currency1.GetHashCode().Equals(currency2.GetHashCode());
@@ -137,54 +76,54 @@ namespace MoneyType.Tests
             actual.Should().BeFalse("because the money structures have differing values");
         }
 
-        ///// <summary>
-        ///// Givens the implicit casting from iso code when called then can correctly cast to currency.
-        ///// </summary>
-        ///// <remarks>
-        ///// TODO: Reinstate once we have an ISO code value object
-        ///// </remarks>
-        //[Test]
-        //public void GivenImplicitCastingFromIsoCode_WhenCalled_ThenCanCorrectlyCastToCurrency()
-        //{
-        //    Currency sek = "SEK";
-        //    Assert.AreEqual("SEK", sek.IsoCode);
-        //}
-
-        /// <summary>
-        /// Givens the explicit casting from string operator when called with valid value then correctly casts value to currency.
-        /// </summary>
+        /// <summary>Given the implicit casting from currency when called then correctly casts to currency iso code.</summary>
         [Test]
-        public void GivenExplicitCastingFromStringOperator_WhenCalledWithValidValue_ThenCorrectlyCastsValueToCurrency()
+        public void GivenImplicitCastingFromCurrency_WhenCalled_ThenCorrectlyCastsToCurrencyIsoCode()
         {
             // ARRANGE
             const string validIsoCode = "SEK";
+            var currencyIsoCode = new CurrencyIsoCode(validIsoCode);
+            var currency = (Currency)currencyIsoCode;
 
             // ACT
-            var actual = (Currency)validIsoCode;
+            CurrencyIsoCode actual = currency;
 
             // ASSERT
-            actual.IsoCode.Should().Be(validIsoCode, "because the cast should have been successful");
+            Assert.AreEqual(actual, currency.IsoCode);
         }
 
         /// <summary>
-        /// Givens the explicit casting from string operator when called with valid value then correctly casts value to currency.
+        /// Given the explicit casting from <see cref="CurrencyIsoCode"/> operator when called with valid value then correctly casts value to currency.
         /// </summary>
         [Test]
-        public void GivenCastingFromStringOperator_WhenCalledWithInvalidValue_ThenCorrectlyCastsValueToCurrency()
+        public void GivenExplicitCastingFromCurrencyIsoCodeOperator_WhenCalledWithValidValue_ThenCorrectlyCastsValueToCurrency()
         {
             // ARRANGE
-            const string validIsoCode = "SPAM";
-            object currency = null;
+            const string validIsoCode = "SEK";
+            var currencyIsoCode = new CurrencyIsoCode(validIsoCode);
 
             // ACT
-            Action actual = () =>
-            {
-                currency = (Currency)validIsoCode;
-            };
+            var actual = (Currency)currencyIsoCode;
 
             // ASSERT
-            actual.Should().Throw<ArgumentException>(validIsoCode, "because the cast should NOT have been successful");
-            currency.Should().BeNull("because the currency should never be assigned.");
+            actual.IsoCode.Value.Should().Be(validIsoCode, "because the cast should have been successful");
+        }
+
+        /// <summary>
+        /// Given the implicit casting from <see cref="CurrencyIsoCode"/> operator when called with valid value then correctly casts value to currency.
+        /// </summary>
+        [Test]
+        public void GivenImplicitCastingFromCurrencyIsoCodeOperator_WhenCalledWithValidValue_ThenCorrectlyCastsValueToCurrency()
+        {
+            // ARRANGE
+            const string validIsoCode = "SEK";
+            var currencyIsoCode = new CurrencyIsoCode(validIsoCode);
+
+            // ACT
+            Currency actual = currencyIsoCode;
+
+            // ASSERT
+            actual.IsoCode.Value.Should().Be(validIsoCode, "because the cast should have been successful");
         }
 
         /// <summary>
@@ -194,8 +133,10 @@ namespace MoneyType.Tests
         public void GivenIsEqualTo_WhenSuppliedWithEqualValues_ThenReturnsTrue()
         {
             // ARRANGE
-            var currency1 = new Currency("DKK");
-            var currency2 = new Currency("DKK");
+            var currencyIsoCode1 = new CurrencyIsoCode("DKK");
+            var currency1 = new Currency(currencyIsoCode1);
+            var currencyIsoCode2 = new CurrencyIsoCode("DKK");
+            var currency2 = new Currency(currencyIsoCode2);
 
             // ACT
             var actual = currency1 == currency2;
@@ -211,35 +152,16 @@ namespace MoneyType.Tests
         public void GivenIsEqualTo_WhenSuppliedWithNonEqualValues_ThenReturnsFalse()
         {
             // ARRANGE
-            var currency1 = new Currency("DKK");
-            var currency2 = new Currency("SEK");
+            var currencyIsoCode1 = new CurrencyIsoCode("DKK");
+            var currency1 = new Currency(currencyIsoCode1);
+            var currencyIsoCode2 = new CurrencyIsoCode("SEK");
+            var currency2 = new Currency(currencyIsoCode2);
 
             // ACT
             var actual = currency1 == currency2;
 
             // ASSERT
             actual.Should().BeFalse("because both values were NOT equal.");
-        }
-
-        [Ignore("Ignoring this test while we refactor the nesting of the known currencies")]
-        [Test]
-        public void Detects_invalid_iso_codes()
-        {
-            Assert.Throws<ArgumentException>(() => { var invalid = (Currency)"INVALID"; });
-        }
-
-        /// <summary>
-        /// Given the known currencies has all instances.
-        /// </summary>
-        [Test]
-        public void GivenKnownCurrencies_HasAllInstances()
-        {
-            Assert.IsInstanceOf<Currency>(Currency.KnownCurrencies.GBP);
-            Assert.IsInstanceOf<Currency>(Currency.KnownCurrencies.DKK);
-            Assert.IsInstanceOf<Currency>(Currency.KnownCurrencies.EUR);
-            Assert.IsInstanceOf<Currency>(Currency.KnownCurrencies.NOK);
-            Assert.IsInstanceOf<Currency>(Currency.KnownCurrencies.SEK);
-            Assert.IsInstanceOf<Currency>(Currency.KnownCurrencies.USD);
         }
     }
 }

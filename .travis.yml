@@ -1,0 +1,32 @@
+language: csharp
+dist: xenial
+sudo: required
+mono: none
+dotnet: 2.1.300
+
+solution: Money.sln
+
+addons:
+  sonarcloud:
+    organization: "dibley1973-github" # the key of the org you chose at step #3
+    token:
+      secure: $SONAR_TOKEN
+      
+branches:
+  only:
+    - master
+
+install:
+  - dotnet tool install --global dotnet-sonarscanner
+  - git fetch --unshallow --tags
+
+before_script:
+  - export PATH="$PATH:$HOME/.dotnet/tools"
+  - chmod +x build.sh
+  - chmod +x run-tests.sh
+
+script:
+  - dotnet sonarscanner begin /k:"Core:Money" /d:sonar.login="$SONAR_TOKEN_DMONEY" /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml" /d:sonar.exclusions="**/bin/**/*,**/obj/**/*" || true
+  - ./build.sh
+  - ./run-tests.sh
+  - dotnet sonarscanner end /d:sonar.login="$SONAR_TOKEN_DMONEY" || true

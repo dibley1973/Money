@@ -18,8 +18,8 @@ branches:
 
 install:
   - dotnet tool install --global dotnet-sonarscanner
-  - git fetch --unshallow --tags
- # - git fetch --depth=10000
+ # - git fetch --unshallow --tags
+  - git fetch --depth=10000
 
 before_script:
   - export PATH="$PATH:$HOME/.dotnet/tools"

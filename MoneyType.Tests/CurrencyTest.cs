@@ -20,6 +20,9 @@ namespace MoneyType.Tests
     [TestFixture]
     public class CurrencyTest
     {
+        private static readonly CurrencySymbol SterlingCurrencySymbol = new CurrencySymbol("£");
+        private static readonly CurrencyIsoCode SterlingCurrencyIsoCode = new CurrencyIsoCode("GBP");
+
         /// <summary>
         /// Given the constructor when supplied null <see cref="CurrencyIsoCode"/> then throws exception.
         /// </summary>
@@ -30,7 +33,23 @@ namespace MoneyType.Tests
             const CurrencyIsoCode nullCurrencyIsoCode = null;
 
             // ACT
-            Action actual = () => new Currency(nullCurrencyIsoCode);
+            Action actual = () => new Currency(nullCurrencyIsoCode, SterlingCurrencySymbol);
+
+            // ASSERT
+            actual.Should().Throw<ArgumentNullException>("because a null ISO code is not permitted for construction");
+        }
+
+        /// <summary>
+        /// Given the constructor when supplied null <see cref="CurrencySymbol"/> then throws exception.
+        /// </summary>
+        [Test]
+        public void GivenConstructor_WhenSuppliedNullCurrencySymbol_ThenThrowsException()
+        {
+            // ARRANGE
+            const CurrencySymbol nullCurrencySymbol = null;
+
+            // ACT
+            Action actual = () => new Currency(SterlingCurrencyIsoCode, nullCurrencySymbol);
 
             // ASSERT
             actual.Should().Throw<ArgumentNullException>("because a null ISO code is not permitted for construction");
@@ -43,10 +62,8 @@ namespace MoneyType.Tests
         public void GivenGetHashCode_WhenSameValues_ThenReturnsTrue()
         {
             // ARRANGE
-            var gbpIsoCode = "GBP";
-            var gbpCurrencyIsoCode = new CurrencyIsoCode(gbpIsoCode);
-            var currency1 = new Currency(gbpCurrencyIsoCode);
-            var currency2 = new Currency(gbpCurrencyIsoCode);
+            var currency1 = new Currency(SterlingCurrencyIsoCode, SterlingCurrencySymbol);
+            var currency2 = new Currency(SterlingCurrencyIsoCode, SterlingCurrencySymbol);
 
             // ACT
             var actual = currency1.GetHashCode().Equals(currency2.GetHashCode());
@@ -62,12 +79,11 @@ namespace MoneyType.Tests
         public void GivenGetHashCode_WhenDifferentValues_ThenReturnsFalse()
         {
             // ARRANGE
-            var isoCode1 = "GBP";
-            var currencyIsoCode1 = new CurrencyIsoCode(isoCode1);
-            var currency1 = new Currency(currencyIsoCode1);
+            var currency1 = new Currency(SterlingCurrencyIsoCode, SterlingCurrencySymbol);
             var isoCode2 = "USD";
             var currencyIsoCode2 = new CurrencyIsoCode(isoCode2);
-            var currency2 = new Currency(currencyIsoCode2);
+            var currencySymbol2 = new CurrencySymbol("$");
+            var currency2 = new Currency(currencyIsoCode2, currencySymbol2);
 
             // ACT
             var actual = currency1.GetHashCode().Equals(currency2.GetHashCode());
@@ -76,54 +92,36 @@ namespace MoneyType.Tests
             actual.Should().BeFalse("because the money structures have differing values");
         }
 
-        /// <summary>Given the implicit casting from currency when called then correctly casts to currency iso code.</summary>
+        /// <summary>
+        /// Given the narrowing conversion from currency to currenc iso code when called then correctly casts to currency iso code.
+        /// </summary>
         [Test]
-        public void GivenImplicitCastingFromCurrency_WhenCalled_ThenCorrectlyCastsToCurrencyIsoCode()
+        public void GivenNarrowingConversionFromCurrencyToCurrencIsoCode_WhenCalled_ThenCorrectlyCastsToCurrencyIsoCode()
         {
             // ARRANGE
-            const string validIsoCode = "SEK";
-            var currencyIsoCode = new CurrencyIsoCode(validIsoCode);
-            var currency = (Currency)currencyIsoCode;
+            var currency = new Currency(SterlingCurrencyIsoCode, SterlingCurrencySymbol);
 
             // ACT
             CurrencyIsoCode actual = currency;
 
             // ASSERT
-            Assert.AreEqual(actual, currency.IsoCode);
+            actual.Value.Should().Be("GBP", "because the cast should result in the encapsulated value");
         }
 
         /// <summary>
-        /// Given the explicit casting from <see cref="CurrencyIsoCode"/> operator when called with valid value then correctly casts value to currency.
+        /// Given the narrowing conversion from currency to currency symbol when called then correctly casts to currency symbol.
         /// </summary>
         [Test]
-        public void GivenExplicitCastingFromCurrencyIsoCodeOperator_WhenCalledWithValidValue_ThenCorrectlyCastsValueToCurrency()
+        public void GivenNarrowingConversionFromCurrencyToCurrencySymbol_WhenCalled_ThenCorrectlyCastsToCurrencySymbol()
         {
             // ARRANGE
-            const string validIsoCode = "SEK";
-            var currencyIsoCode = new CurrencyIsoCode(validIsoCode);
+            var currency = new Currency(SterlingCurrencyIsoCode, SterlingCurrencySymbol);
 
             // ACT
-            var actual = (Currency)currencyIsoCode;
+            CurrencySymbol actual = currency;
 
             // ASSERT
-            actual.IsoCode.Value.Should().Be(validIsoCode, "because the cast should have been successful");
-        }
-
-        /// <summary>
-        /// Given the implicit casting from <see cref="CurrencyIsoCode"/> operator when called with valid value then correctly casts value to currency.
-        /// </summary>
-        [Test]
-        public void GivenImplicitCastingFromCurrencyIsoCodeOperator_WhenCalledWithValidValue_ThenCorrectlyCastsValueToCurrency()
-        {
-            // ARRANGE
-            const string validIsoCode = "SEK";
-            var currencyIsoCode = new CurrencyIsoCode(validIsoCode);
-
-            // ACT
-            Currency actual = currencyIsoCode;
-
-            // ASSERT
-            actual.IsoCode.Value.Should().Be(validIsoCode, "because the cast should have been successful");
+            actual.Value.Should().Be("£", "because the cast should result in the encapsulated value");
         }
 
         /// <summary>
@@ -134,9 +132,11 @@ namespace MoneyType.Tests
         {
             // ARRANGE
             var currencyIsoCode1 = new CurrencyIsoCode("DKK");
-            var currency1 = new Currency(currencyIsoCode1);
+            var currencySymbol1 = new CurrencySymbol("kr");
+            var currency1 = new Currency(currencyIsoCode1, currencySymbol1);
             var currencyIsoCode2 = new CurrencyIsoCode("DKK");
-            var currency2 = new Currency(currencyIsoCode2);
+            var currencySymbol2 = new CurrencySymbol("kr");
+            var currency2 = new Currency(currencyIsoCode2, currencySymbol2);
 
             // ACT
             var actual = currency1 == currency2;
@@ -153,15 +153,23 @@ namespace MoneyType.Tests
         {
             // ARRANGE
             var currencyIsoCode1 = new CurrencyIsoCode("DKK");
-            var currency1 = new Currency(currencyIsoCode1);
+            var currencySymbol1 = new CurrencySymbol("kr");
+            var currency1 = new Currency(currencyIsoCode1, currencySymbol1);
             var currencyIsoCode2 = new CurrencyIsoCode("SEK");
-            var currency2 = new Currency(currencyIsoCode2);
+            var currencySymbol2 = new CurrencySymbol("kr");
+            var currency2 = new Currency(currencyIsoCode2, currencySymbol2);
+
+            var currencyIsoCode3 = new CurrencyIsoCode("SEK");
+            var currencySymbol3 = new CurrencySymbol("kr1");
+            var currency3 = new Currency(currencyIsoCode3, currencySymbol3);
 
             // ACT
-            var actual = currency1 == currency2;
+            var actual1 = currency1 == currency2;
+            var actual2 = currency2 == currency3;
 
             // ASSERT
-            actual.Should().BeFalse("because both values were NOT equal.");
+            actual1.Should().BeFalse("because both values were NOT equal.");
+            actual2.Should().BeFalse("because both values were NOT equal.");
         }
     }
 }

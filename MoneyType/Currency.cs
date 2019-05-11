@@ -23,16 +23,17 @@ namespace MoneyType
         /// Initializes a new instance of the <see cref="Currency"/> class.
         /// </summary>
         /// <param name="isoCode">The three letter ISO 4217 code.</param>
+        /// <param name="symbol">The currency symbol.</param>
         /// <exception cref="ArgumentNullException">
-        /// Thrown if isoCode is null, empty or white space.
+        /// Thrown if isoCode or symbol is null.
         /// </exception>
-        /// <exception cref="ArgumentException">
-        /// Thrown if the specified ISO currency code appears to be invalid.
-        /// </exception>
-        internal Currency(CurrencyIsoCode isoCode)
+        internal Currency(CurrencyIsoCode isoCode, CurrencySymbol symbol)
         {
             IsoCode = isoCode ??
                 throw new ArgumentNullException(nameof(isoCode));
+
+            Symbol = symbol ??
+                throw new ArgumentNullException(nameof(symbol));
         }
 
         /// <summary>
@@ -44,16 +45,12 @@ namespace MoneyType
         public CurrencyIsoCode IsoCode { get; }
 
         /// <summary>
-        /// Performs an implicit conversion from <see cref="CurrencyIsoCode"/> to <see cref="Currency"/>.
+        /// Gets the currency symbol.
         /// </summary>
-        /// <param name="isoCode">The three letter ISO 4217 code.</param>
-        /// <returns>
-        /// The result of the conversion.
-        /// </returns>
-        public static implicit operator Currency(CurrencyIsoCode isoCode)
-        {
-            return new Currency(isoCode);
-        }
+        /// <value>
+        /// The currency symbol.
+        /// </value>
+        public CurrencySymbol Symbol { get; }
 
         /// <summary>
         /// Performs an implicit conversion from <see cref="Currency"/> to <see cref="CurrencyIsoCode"/>.
@@ -68,6 +65,18 @@ namespace MoneyType
         }
 
         /// <summary>
+        /// Performs an implicit conversion from <see cref="Currency"/> to <see cref="CurrencySymbol"/>.
+        /// </summary>
+        /// <param name="currency">The currency symbol.</param>
+        /// <returns>
+        /// The result of the conversion.
+        /// </returns>
+        public static implicit operator CurrencySymbol(Currency currency)
+        {
+            return currency.Symbol;
+        }
+
+        /// <summary>
         /// Instance specific implementation of `Equals`.
         /// </summary>
         /// <param name="other">The other.</param>
@@ -76,7 +85,7 @@ namespace MoneyType
         /// </returns>
         protected override bool EqualsCore(Currency other)
         {
-            return IsoCodesMatch(other);
+            return IsoCodesMatch(other) && SymbolsMatch(other);
         }
 
         /// <summary>
@@ -111,6 +120,19 @@ namespace MoneyType
         }
 
         /// <summary>
+        /// Determines if the symbol for the current instance and the specified
+        /// <see cref="Currency"/> match.
+        /// </summary>
+        /// <param name="other">The other <see cref="Currency"/> to check.</param>
+        /// <returns>
+        ///   <c>true</c> if the symbols match; otherwise, <c>false</c>.
+        /// </returns>
+        private bool SymbolsMatch(Currency other)
+        {
+            return Equals(other.Symbol, Symbol);
+        }
+
+        /// <summary>
         /// Encapsulates known currencies
         /// </summary>
         public static class KnownCurrencies
@@ -118,32 +140,32 @@ namespace MoneyType
             /// <summary>
             /// The Pound Sterling currency
             /// </summary>
-            public static readonly Currency GBP = new Currency(CurrencyIsoCode.KnownCurrencyIsoCodes.GBP);
+            public static readonly Currency GBP = new Currency(CurrencyIsoCode.KnownCurrencyIsoCodes.GBP, new CurrencySymbol("£"));
 
             /// <summary>
             /// The Danish krone currency
             /// </summary>
-            public static readonly Currency DKK = new Currency(CurrencyIsoCode.KnownCurrencyIsoCodes.DKK);
+            public static readonly Currency DKK = new Currency(CurrencyIsoCode.KnownCurrencyIsoCodes.DKK, new CurrencySymbol("kr"));
 
             /// <summary>
             /// The euro currency
             /// </summary>
-            public static readonly Currency EUR = new Currency(CurrencyIsoCode.KnownCurrencyIsoCodes.EUR);
+            public static readonly Currency EUR = new Currency(CurrencyIsoCode.KnownCurrencyIsoCodes.EUR, new CurrencySymbol("€"));
 
             /// <summary>
             /// The Norwegian krone currency
             /// </summary>
-            public static readonly Currency NOK = new Currency(CurrencyIsoCode.KnownCurrencyIsoCodes.NOK);
+            public static readonly Currency NOK = new Currency(CurrencyIsoCode.KnownCurrencyIsoCodes.NOK, new CurrencySymbol("kr"));
 
             /// <summary>
             /// The Swedish krona/kronor currency
             /// </summary>
-            public static readonly Currency SEK = new Currency(CurrencyIsoCode.KnownCurrencyIsoCodes.SEK);
+            public static readonly Currency SEK = new Currency(CurrencyIsoCode.KnownCurrencyIsoCodes.SEK, new CurrencySymbol("kr"));
 
             /// <summary>
             /// The US dollar currency
             /// </summary>
-            public static readonly Currency USD = new Currency(CurrencyIsoCode.KnownCurrencyIsoCodes.USD);
+            public static readonly Currency USD = new Currency(CurrencyIsoCode.KnownCurrencyIsoCodes.USD, new CurrencySymbol("$"));
         }
     }
 }

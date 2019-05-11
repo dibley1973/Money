@@ -83,7 +83,7 @@ namespace MoneyType
             {
                 int hashCode = Value.GetHashCode();
 
-                hashCode = hashCode * 383;
+                hashCode = hashCode * 389;
 
                 return hashCode;
             }

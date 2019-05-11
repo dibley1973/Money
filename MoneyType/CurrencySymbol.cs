@@ -22,17 +22,14 @@ namespace MoneyType
         /// <summary>
         /// The maximum symbol length
         /// </summary>
-        public const int MaximumSymbolLength = 3;
+        public const int MaximumSymbolLength = 4;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CurrencySymbol"/> class.
         /// </summary>
-        /// <param name="value">The three letter ISO 4217 code.</param>
+        /// <param name="value">The currency symbol.</param>
         /// <exception cref="ArgumentNullException">
-        /// Thrown if isoCode is null, empty or white space.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// Thrown if the specified ISO currency code appears to be invalid.
+        /// Thrown if currency symbol value is null, empty or white space.
         /// </exception>
         internal CurrencySymbol(string value)
         {
@@ -43,23 +40,23 @@ namespace MoneyType
         }
 
         /// <summary>
-        /// Gets the three letter ISO 4217 code.
+        /// Gets the currency symbol.
         /// </summary>
         /// <value>
-        /// The three letter ISO 4217 code.
+        /// The currency symbol.
         /// </value>
         public string Value { get; }
 
         /// <summary>
         /// Performs an implicit conversion from <see cref="string"/> to <see cref="Currency"/>.
         /// </summary>
-        /// <param name="isoCode">The three letter ISO 4217 code.</param>
+        /// <param name="currencySymbol">The currency symbol.</param>
         /// <returns>
         /// The result of the conversion.
         /// </returns>
-        public static explicit operator CurrencySymbol(string isoCode)
+        public static explicit operator CurrencySymbol(string currencySymbol)
         {
-            return new CurrencySymbol(isoCode);
+            return new CurrencySymbol(currencySymbol);
         }
 
         /// <summary>
@@ -71,7 +68,7 @@ namespace MoneyType
         /// </returns>
         protected override bool EqualsCore(CurrencySymbol other)
         {
-            return IsoCodesMatch(other);
+            return SymbolsMatch(other);
         }
 
         /// <summary>
@@ -125,52 +122,16 @@ namespace MoneyType
         }
 
         /// <summary>
-        /// Determines if the three letter ISO codes for the current instance and the iso
-        /// code for the specified <see cref="CurrencySymbol"/> match.
+        /// Determines if the currency symbol for the current instance and the
+        /// currency symbol for the specified <see cref="CurrencySymbol"/> match.
         /// </summary>
         /// <param name="other">The other <see cref="CurrencySymbol"/> to check.</param>
         /// <returns>
-        ///   <c>true</c> if the ISO codes match; otherwise, <c>false</c>.
+        ///   <c>true</c> if the currency symbols match; otherwise, <c>false</c>.
         /// </returns>
-        private bool IsoCodesMatch(CurrencySymbol other)
+        private bool SymbolsMatch(CurrencySymbol other)
         {
             return Equals(other.Value, Value);
-        }
-
-        /// <summary>
-        /// Encapsulates known currency ISO codes
-        /// </summary>
-        public static class KnownCurrencySymbols
-        {
-            /// <summary>
-            /// The Pound Sterling currency ISO code
-            /// </summary>
-            public static readonly CurrencySymbol GBP = new CurrencySymbol("GBP");
-
-            /// <summary>
-            /// The Danish krone currency ISO code
-            /// </summary>
-            public static readonly CurrencySymbol DKK = new CurrencySymbol("DKK");
-
-            /// <summary>
-            /// The euro currency ISO code
-            /// </summary>
-            public static readonly CurrencySymbol EUR = new CurrencySymbol("EUR");
-
-            /// <summary>
-            /// The Norwegian krone currency ISO code
-            /// </summary>
-            public static readonly CurrencySymbol NOK = new CurrencySymbol("NOK");
-
-            /// <summary>
-            /// The Swedish krona/kronor currency ISO code
-            /// </summary>
-            public static readonly CurrencySymbol SEK = new CurrencySymbol("SEK");
-
-            /// <summary>
-            /// The US dollar currency ISO code
-            /// </summary>
-            public static readonly CurrencySymbol USD = new CurrencySymbol("USD");
         }
     }
 }

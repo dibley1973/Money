@@ -138,10 +138,10 @@ namespace MoneyType.Tests
         public void GivenConstructor_WhenSuppliedValidIsoCode_ThenDoesNotThrowException()
         {
             // ARRANGE
-            var tooShortIsoCode = "GBP";
+            var isoCode = "GBP";
 
             // ACT
-            Action actual = () => new CurrencyIsoCode(tooShortIsoCode);
+            Action actual = () => new CurrencyIsoCode(isoCode);
 
             // ASSERT
             actual.Should().NotThrow("because a valid ISO code is permitted for construction");

@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="CurrencyIsoCode.cs" company="MoneyType">
+// <copyright file="CurrencySymbol.cs" company="MoneyType">
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
 // as published by the Free Software Foundation; either version 2
@@ -8,38 +8,24 @@
 //-----------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
 using MoneyType.BaseClasses;
 
 // ReSharper disable InconsistentNaming
 namespace MoneyType
 {
     /// <summary>
-    /// Encapsulates currency ISO code data and behaviour.
+    /// Encapsulates currency symbol data and behaviour.
     /// </summary>
     /// <seealso cref="ValueObject{T}" />
-    public class CurrencyIsoCode : ValueObject<CurrencyIsoCode>
+    public class CurrencySymbol : ValueObject<CurrencySymbol>
     {
         /// <summary>
-        /// The expected ISO 4217 code length
+        /// The maximum symbol length
         /// </summary>
-        public const int ExpectedIso4217CodeLength = 3;
+        public const int MaximumSymbolLength = 3;
 
         /// <summary>
-        /// The whitelist
-        /// </summary>
-        internal static readonly HashSet<string> Whitelist = new HashSet<string>
-        {
-            "GBP",
-            "DKK",
-            "EUR",
-            "NOK",
-            "SEK",
-            "USD"
-        };
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="CurrencyIsoCode"/> class.
+        /// Initializes a new instance of the <see cref="CurrencySymbol"/> class.
         /// </summary>
         /// <param name="value">The three letter ISO 4217 code.</param>
         /// <exception cref="ArgumentNullException">
@@ -48,11 +34,10 @@ namespace MoneyType
         /// <exception cref="ArgumentException">
         /// Thrown if the specified ISO currency code appears to be invalid.
         /// </exception>
-        internal CurrencyIsoCode(string value)
+        internal CurrencySymbol(string value)
         {
             EnsureNotNullOrWhiteSpace(value);
-            EnsureCorrectLength(value);
-            EnsureOnTheWhiteList(value);
+            EnsureMaximumLengthIsNotExceeded(value);
 
             Value = value;
         }
@@ -72,9 +57,9 @@ namespace MoneyType
         /// <returns>
         /// The result of the conversion.
         /// </returns>
-        public static explicit operator CurrencyIsoCode(string isoCode)
+        public static explicit operator CurrencySymbol(string isoCode)
         {
-            return new CurrencyIsoCode(isoCode);
+            return new CurrencySymbol(isoCode);
         }
 
         /// <summary>
@@ -84,7 +69,7 @@ namespace MoneyType
         /// <returns>
         /// Returns <c>true</c> if it equals; otherwise <c>false</c>.
         /// </returns>
-        protected override bool EqualsCore(CurrencyIsoCode other)
+        protected override bool EqualsCore(CurrencySymbol other)
         {
             return IsoCodesMatch(other);
         }
@@ -108,29 +93,20 @@ namespace MoneyType
         }
 
         /// <summary>
-        /// Ensures value is on the white list.
+        /// Ensures the maximum length of the value is not exceeded.
         /// </summary>
         /// <param name="value">The value.</param>
-        /// <exception cref="ArgumentException">The value of {nameof(value)}</exception>
-        private static void EnsureOnTheWhiteList(string value)
+        /// <exception cref="ArgumentException">
+        /// Thrown when the length of the specified symbol length was incorrect,
+        /// and exceeds the maximum length of <see cref="MaximumSymbolLength"/>
+        /// </exception>
+        private static void EnsureMaximumLengthIsNotExceeded(string value)
         {
-            if (IsNotOnWhiteList(value))
-            {
-                throw new ArgumentException($"The value of {nameof(value)} is an unrecognised ISO currency code");
-            }
-        }
-
-        /// <summary>
-        /// Ensures value is the length of the correct.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <exception cref="ArgumentException">Specified ISO code length was incorrect. Expected length of {ExpectedIso4217CodeLength}</exception>
-        private static void EnsureCorrectLength(string value)
-        {
-            if (value.Length != ExpectedIso4217CodeLength)
+            var symbolLength = value.Length;
+            if (symbolLength > MaximumSymbolLength)
             {
                 throw new ArgumentException(
-                    $"Specified ISO code length was incorrect. Expected length of {ExpectedIso4217CodeLength}",
+                    $"Specified symbol length was incorrect. Maximum length of {MaximumSymbolLength}, actual length of {symbolLength}",
                     value);
             }
         }
@@ -149,26 +125,14 @@ namespace MoneyType
         }
 
         /// <summary>
-        /// Determines whether the specified value is not on white list.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <returns>
-        ///   <c>true</c> if the specified value is not on white list; otherwise, <c>false</c>.
-        /// </returns>
-        private static bool IsNotOnWhiteList(string value)
-        {
-            return !Whitelist.Contains(value);
-        }
-
-        /// <summary>
         /// Determines if the three letter ISO codes for the current instance and the iso
-        /// code for the specified <see cref="CurrencyIsoCode"/> match.
+        /// code for the specified <see cref="CurrencySymbol"/> match.
         /// </summary>
-        /// <param name="other">The other <see cref="CurrencyIsoCode"/> to check.</param>
+        /// <param name="other">The other <see cref="CurrencySymbol"/> to check.</param>
         /// <returns>
         ///   <c>true</c> if the ISO codes match; otherwise, <c>false</c>.
         /// </returns>
-        private bool IsoCodesMatch(CurrencyIsoCode other)
+        private bool IsoCodesMatch(CurrencySymbol other)
         {
             return Equals(other.Value, Value);
         }
@@ -176,37 +140,37 @@ namespace MoneyType
         /// <summary>
         /// Encapsulates known currency ISO codes
         /// </summary>
-        public static class KnownCurrencyIsoCodes
+        public static class KnownCurrencySymbols
         {
             /// <summary>
             /// The Pound Sterling currency ISO code
             /// </summary>
-            public static readonly CurrencyIsoCode GBP = new CurrencyIsoCode("GBP");
+            public static readonly CurrencySymbol GBP = new CurrencySymbol("GBP");
 
             /// <summary>
             /// The Danish krone currency ISO code
             /// </summary>
-            public static readonly CurrencyIsoCode DKK = new CurrencyIsoCode("DKK");
+            public static readonly CurrencySymbol DKK = new CurrencySymbol("DKK");
 
             /// <summary>
             /// The euro currency ISO code
             /// </summary>
-            public static readonly CurrencyIsoCode EUR = new CurrencyIsoCode("EUR");
+            public static readonly CurrencySymbol EUR = new CurrencySymbol("EUR");
 
             /// <summary>
             /// The Norwegian krone currency ISO code
             /// </summary>
-            public static readonly CurrencyIsoCode NOK = new CurrencyIsoCode("NOK");
+            public static readonly CurrencySymbol NOK = new CurrencySymbol("NOK");
 
             /// <summary>
             /// The Swedish krona/kronor currency ISO code
             /// </summary>
-            public static readonly CurrencyIsoCode SEK = new CurrencyIsoCode("SEK");
+            public static readonly CurrencySymbol SEK = new CurrencySymbol("SEK");
 
             /// <summary>
             /// The US dollar currency ISO code
             /// </summary>
-            public static readonly CurrencyIsoCode USD = new CurrencyIsoCode("USD");
+            public static readonly CurrencySymbol USD = new CurrencySymbol("USD");
         }
     }
 }
